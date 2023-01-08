@@ -1,0 +1,108 @@
+<navbar></navbar>
+
+<div class="input-group m-4">
+  <input [(ngModel)]="search" type="text" class="form-control" placeholder="Search product's" aria-label="Recipient's username" aria-describedby="button-addon2">
+  <button class="btn btn-outline-secondary me-5" type="button" id="button-addon2">Button</button>
+</div>
+
+<div class="text-center">
+    <button class="btn btn-success m-3" 
+    data-bs-toggle="modal" data-bs-target="#exampleModal">New product</button>
+</div>
+<hr>
+<div class="row">
+    <div *ngFor="let product of products | search:search" class="card m-4 text-center" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{ product.category.name }}</h6>
+          <p class="card-text">Quantity: {{ product.stock }}</p>
+          <p class="card-text">Sales: {{ product.sales }}</p>
+          <p class="card-text">Q: {{ product.price }}</p>
+          <button class="btn btn-primary">Add to Shopping cart</button>
+          <button (click)="getProduct(product._id)" class="btn btn-warning m-2" 
+            data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+            Update
+          </button>
+          <button (click)="deleteProduct(product._id)" class="btn btn-danger">Delete</button>
+          <button class="btn btn-secondary ms-2" [routerLink]="['/viewProduct/' + product._id]">View</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal save product-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">New Product:</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          
+            <form #addProductForm="ngForm">
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label">Name</label>
+                  <input [(ngModel)]="product.name" name="name" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                </div>
+                <div class="mb-3">
+                  <label for="exampleInputPassword1" class="form-label">Stock</label>
+                  <input min="1" [(ngModel)]="product.stock" name="password" type="number" class="form-control" id="exampleInputPassword1" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Price</label>
+                    <input [(ngModel)]="product.price" name="price" type="number" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Category</label>
+                    <select [(ngModel)]="product.category" name="category" class="form-select" aria-label="Default select example">
+                        <option value="" disabled>Open this select menu</option>
+                        <option *ngFor="let category of categorys" value="{{ category._id }}">{{ category.name}}</option>
+                    </select>
+                </div>
+              </form>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button (click)="saveProduct(addProductForm)" type="submit" class="btn btn-primary"
+            data-bs-dismiss="modal">Save changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<!-- off canvas update product -->    
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Update product</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    
+    <form *ngIf="productUpdate">
+      <div class="mb-3">
+        <label for="nameUpdate" class="form-label">Name</label>
+        <input [(ngModel)]="productUpdate.name" name="name" type="text" class="form-control" id="nameUpdate" aria-describedby="emailHelp">
+      </div>
+      <div class="mb-3">
+        <label for="stockUpdate" class="form-label">Stock</label>
+        <input [(ngModel)]="productUpdate.stock" name="password" type="number" class="form-control" id="stockUpdate">
+      </div>
+      <div class="mb-3">
+          <label for="priceUpdate" class="form-label">Price</label>
+          <input [(ngModel)]="productUpdate.price" name="price" type="number" class="form-control" id="priceUpdate">
+      </div>
+      <div class="mb-3">
+          <label for="categoryUpdate" class="form-label">Category</label>
+          <select [(ngModel)]="productUpdate.category._id" name="category" class="form-select" aria-label="Default select example" id="categoryUpdate">
+              <option *ngFor="let category of categorys" value="{{ category._id }}">{{ category.name }}</option>
+          </select>
+      </div>
+      <button (click)="updateProduct()" class="btn btn-success mt-4">Update</button>
+    </form>
+
+  </div>
+</div>
